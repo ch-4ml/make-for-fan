@@ -1,20 +1,18 @@
 # 하이퍼레저 패브릭 기반 투표 앱 for 팬(Make for fan)
 
-<div style="text-align: center;">
-<img src="./images/fff.png" width="65%"><br>
-</div>
+<img src="./images/fff.png" width="65%">
 </br></br>
 
 # 프로젝트 명
-## 블록체인 기반 투표 앱 for 팬
+### 블록체인 기반 투표 앱 for 팬
 </br></br>
 
 # 프로젝트 팀
-## 박찬형(팀장) | 김명석 | 원소희 | 최한솔
+### 박찬형(팀장) | 김명석 | 원소희 | 최한솔
 </br></br>
 
 # 프로젝트 기간
-## 19.11.26 ~ ing
+### 19.11.26 ~ ing
 </br></br>
 
 # 프로젝트 목표(개요)
@@ -36,23 +34,19 @@
 </br></br>
 
 # 개발 언어 환경 | 구성 환경
-<div style="text-align: center;">
 <img src="./images/fff-project-config.png">
-</div>
 </br>
 
-<center>
 | BlockChain | API Server | Applicationc|
 |:----------:|:----------:|:----------:|
 |Hyperledger Fabric | Node.js | React.js |
-</center>
 
-<h3>
+<h4>
 
 - `Hyperledger Fabric` 네트워크를 작성하고, 네트워크에 `Smart Contract(Chaincode)`를 설치하고 인스턴스화합니다.
 - `Node.js` 서버는 `Fabric SDK`를 사용하여 `Hyperledger Fabric` 네트워크와 상호작용하고, `Web/App` 클라이언트용 `API`를 작성합니다.
 - `React.js` 클라이언트는 `Node.js` 애플리케이션 `API`를 사용하여 네트워크와 상호작용합니다.
 - 사용자는 `React.js` 웹/앱 인터페이스와 상호작용하여 투표하고, 현재 상태를 조회하기 위해 `World State`를 쿼리합니다.
 
-</h3>
+</h4>
 </br></br>
