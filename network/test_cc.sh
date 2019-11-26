@@ -102,11 +102,11 @@ sleep 2
 echo '□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□ 투표 테스트 □□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□'
 docker exec cli peer chaincode invoke -n sacc -C mychannel -c '{"Args":["choice", "2d7b42d089129b234caa94c728406cc548dd5593c8a6fc55ee86a3e62f5b819c", "박보영", "홍길동", "1"]}'
 sleep 2
-docker exec cli peer chaincode invoke -n sacc -C mychannel -c '{"Args":["choice", "2d7b42d089129b234caa94c728406cc548dd5593c8a6fc55ee86a3e62f5b819c", "박보영", "아무개", "1"]}'
+docker exec cli peer chaincode invoke -n sacc -C mychannel -c '{"Args":["choice", "2d7b42d089129b234caa94c728406cc548dd5593c8a6fc55ee86a3e62f5b819c", "박보검", "아무개", "1"]}'
 sleep 2
 docker exec cli peer chaincode invoke -n sacc -C mychannel -c '{"Args":["choice", "724f0e7da790374cec1b52c82db372b340949be200820100e584eff369dbda9f", "우마", "아무개", "3"]}'
 sleep 2
-docker exec cli peer chaincode invoke -n sacc -C mychannel -c '{"Args":["choice", "724f0e7da790374cec1b52c82db372b340949be200820100e584eff369dbda9f", "우마", "홍길동", "2"]}'
+docker exec cli peer chaincode invoke -n sacc -C mychannel -c '{"Args":["choice", "724f0e7da790374cec1b52c82db372b340949be200820100e584eff369dbda9f", "헌터퐝", "홍길동", "3"]}'
 sleep 2
 
 # # 중복 투표 테스트

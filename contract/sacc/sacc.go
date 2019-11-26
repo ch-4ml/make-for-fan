@@ -46,11 +46,12 @@ type Vote struct {
 	Choice1  	string `json:"choice1"`  // 선택지 1
 	Count1	 	string `json:"count1"`   // 선택지 1의 득표 수
 	Users1		string `json:"users1"`	 // 1 선택한 User 리스트
-	Values1		string `json:"values1"`	 // 투표에 사용한 토큰 수
+	Values1		string `json:"values1"`	 // 투표에 사용한 토큰 수 리스트
 	Choice2		string `json:"choice2"`  // 선택지 2
 	Count2		string `json:"count2"`	 // 선택지 2의 득표 수
 	Users2		string `json:"users2"`	 // 2 선택한 User 리스트
-	Values2		string `json:"values2"`	 // 투표에 사용한 토큰 수
+	Values2		string `json:"values2"`	 // 투표에 사용한 토큰 수 리스트
+	Total		string `json:"total"`	 // 총 득표 수
 	Result		string `json:"result"`	 // 결과
 	Status		string `json:"status"`	 // 0: 생성, 1: 진행 중, 2: 종료
 	Reward		string `json:"reward"`	 // 보상으로 지급되는 토큰
@@ -280,6 +281,7 @@ func setVote(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 		Count2: 	"0",
 		Users2:		"",
 		Values2:	"",
+		Total:		"0",
 		Result: 	"",	
 		Status: 	"0",
 		Reward:		args[6],
@@ -469,14 +471,15 @@ func changeVoteStatus(stub shim.ChaincodeStubInterface, args []string) (string, 
 		return "", fmt.Errorf("Incorrect arguments. Expecting a key and a value")
 	}
 	value := []byte{0x00}
-	users := []string{}
-	values := []string{}
-	var user string
-	var count int
-	var selectedIdx int
-
 	stub.PutState(newStatusIdIndexKey, value);
+
 	if voteToTransfer.Status == "2" {
+		users := []string{}
+		values := []string{}
+		var user string
+		var count int
+		var selectedIdx int
+
 		count1, _ := strconv.Atoi(voteToTransfer.Count1)
 		count2, _ := strconv.Atoi(voteToTransfer.Count2)
 		if count1 > count2 {
@@ -500,44 +503,45 @@ func changeVoteStatus(stub shim.ChaincodeStubInterface, args []string) (string, 
 			count = count1 + count2
 		}
 
-		seed := rand.NewSource(time.Now().UnixNano())
-		rval := rand.New(seed)
-		rnum := rval.Intn(count)
-		
-		for i, v := range users {
-			weight, _ := strconv.Atoi(values[i])
-			rnum -= weight
-			if rnum <= 0 {
-				selectedIdx = i
-				user = v
+		if count1 != 0 && count2 != 0 { // 투표하지 않은 경우 발생하는 에러 처리를 위한 조건
+			seed := rand.NewSource(time.Now().UnixNano())
+			rval := rand.New(seed)
+			rnum := rval.Intn(count)
+			
+			for i, v := range users {
+				weight, _ := strconv.Atoi(values[i])
+				rnum -= weight
+				if rnum <= 0 {
+					selectedIdx = i
+					user = v
+				}
 			}
-		}
 
-		voteToTransfer.Winner = users[selectedIdx]
-		fmt.Printf(user)
-		fmt.Printf(voteToTransfer.Winner)
+			voteToTransfer.Winner = users[selectedIdx]
+			fmt.Printf(user) // 빼면 안됨 user 써야해서
 
-		userAsString, err := getUserByName(stub, []string{voteToTransfer.Winner})
-		if userAsString == "" {
-			return "", fmt.Errorf("User does not exist: %s", err)
-		} 
-		userAsBytes := []byte(userAsString)
+			userAsString, err := getUserByName(stub, []string{voteToTransfer.Winner})
+			if userAsString == "" {
+				return "", fmt.Errorf("User does not exist: %s", err)
+			} 
+			userAsBytes := []byte(userAsString)
 
-		userToTransfer := User{}
-		err = json.Unmarshal(userAsBytes, &userToTransfer)
-		if err != nil {
-			return "", fmt.Errorf("An error occurred during unmarshal: %s", err)
-		}
-	
-		token, _ := strconv.Atoi(userToTransfer.Token)
-		reward, _ := strconv.Atoi(voteToTransfer.Reward)
-		token += reward
-		userToTransfer.Token = strconv.Itoa(token)
+			userToTransfer := User{}
+			err = json.Unmarshal(userAsBytes, &userToTransfer)
+			if err != nil {
+				return "", fmt.Errorf("An error occurred during unmarshal: %s", err)
+			}
+		
+			token, _ := strconv.Atoi(userToTransfer.Token)
+			reward, _ := strconv.Atoi(voteToTransfer.Reward)
+			token += reward
+			userToTransfer.Token = strconv.Itoa(token)
 
-		userJSONasBytes, _ := json.Marshal(userToTransfer)
-		err = stub.PutState(userToTransfer.Id, userJSONasBytes)
-		if err != nil {
-			return "", fmt.Errorf("Failed to set asset: %s", err);
+			userJSONasBytes, _ := json.Marshal(userToTransfer)
+			err = stub.PutState(userToTransfer.Id, userJSONasBytes)
+			if err != nil {
+				return "", fmt.Errorf("Failed to set asset: %s", err);
+			}
 		}
 	}
 	voteJSONasBytes, _ := json.Marshal(voteToTransfer)
@@ -626,9 +630,9 @@ func choice(stub shim.ChaincodeStubInterface, args[] string) (string, error) {
 /* --------------------------------------------------------------- */
 
 	if choice == voteToTransfer.Choice1 {
-		count, _ := strconv.Atoi(voteToTransfer.Count1)
-		count += nValue
-		voteToTransfer.Count1 = strconv.Itoa(count)
+		count1, _ := strconv.Atoi(voteToTransfer.Count1)
+		count1 += nValue
+		voteToTransfer.Count1 = strconv.Itoa(count1)
 		userToTransfer.Choices += voteToTransfer.Choice1
 		if voteToTransfer.Users1 != "" {
 			voteToTransfer.Users1 += ", "
@@ -639,9 +643,9 @@ func choice(stub shim.ChaincodeStubInterface, args[] string) (string, error) {
 		voteToTransfer.Users1 += user
 		voteToTransfer.Values1 += value
 	} else {
-		count, _ := strconv.Atoi(voteToTransfer.Count2)
-		count += nValue
-		voteToTransfer.Count2 = strconv.Itoa(count)
+		count2, _ := strconv.Atoi(voteToTransfer.Count2)
+		count2 += nValue
+		voteToTransfer.Count2 = strconv.Itoa(count2)
 		userToTransfer.Choices += voteToTransfer.Choice2
 		if voteToTransfer.Users2 != "" {
 			voteToTransfer.Users2 += ", "
@@ -652,6 +656,11 @@ func choice(stub shim.ChaincodeStubInterface, args[] string) (string, error) {
 		voteToTransfer.Users2 += user
 		voteToTransfer.Values2 += value
 	}
+
+	count1, _ := strconv.Atoi(voteToTransfer.Count1)
+	count2, _ := strconv.Atoi(voteToTransfer.Count2)
+	total := count1 + count2
+	voteToTransfer.Total = strconv.Itoa(total)
 
 	voteJSONasBytes, _ := json.Marshal(voteToTransfer)
 	err = stub.PutState(id, voteJSONasBytes)

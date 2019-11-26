@@ -10,7 +10,6 @@ class Time {
             const obj = JSON.parse(result);
             for(let i = 0; i < obj.length; i++) {
                 let res = obj[i];
-                console.log("0: " + JSON.stringify(res));
                 if(this.isDatePassed(res.begin)) {
                     await voteModel.changeVoteStatus(res.id);
                 } else {
@@ -30,7 +29,6 @@ class Time {
             const obj = JSON.parse(result);
             for(let i = 0; i < obj.length; i++) {
                 let res = obj[i];
-                console.log("1: " + JSON.stringify(res));
                 if(this.isDatePassed(res.end)) {
                     await voteModel.changeVoteStatus(res.id);
                 } else {
