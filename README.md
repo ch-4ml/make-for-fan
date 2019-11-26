@@ -59,7 +59,7 @@
 [Demo](http://ch-4ml.iptime.org:3000)
 
 ## 직접 구축해보려면 아래를 따라 진행해주세요.
-아래 링크를 따라 실행 환경 구축을 먼저 완료해주세요.
+링크를 따라 실행 환경 구축을 먼저 완료해주세요.
 [실행 환경 구축 방법](https://github.com/ch-4ml/Hyperledger-Configuration/blob/master/ubuntu_setup/ChangeConfig.md)
 
 환경 구축을 완료하셨다면, Docker를 이용해서 네트워크를 구축하고, 체인코드를 Peer에 설치 후 채널에 배포해야 합니다.
