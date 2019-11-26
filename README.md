@@ -56,7 +56,7 @@
 # How to demonstration
 
 ## 지금 실행 중인 서버에 접근하려면 아래 링크에 접속해주세요.<br>
-[Demo](ch-4ml.iptime.org:3000)
+[Demo](http://ch-4ml.iptime.org:3000)
 
 ## 직접 구축해보려면 아래를 따라 진행해주세요.
 아래 링크를 따라 실행 환경 구축을 먼저 완료해주세요.
