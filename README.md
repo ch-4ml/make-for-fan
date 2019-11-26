@@ -99,4 +99,5 @@ $ node ./server-local.js
 $ npm start
 ```
 
-React.js 클라이언트는 현재 localhost:3000에서 작동합니다. 접속해서 실행해주세요!
+React.js 클라이언트는 현재 localhost:3000에서 작동합니다. 
+React에서 REST API를 호출할 때, 서버의 주소를 알맞게 작성해야 합니다.
